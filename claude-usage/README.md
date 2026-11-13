@@ -58,12 +58,15 @@ The installer adds it to `~/.config/herdr-app/themes/` and keeps a copy you've e
 
 ```json
 { "id": "root", "type": "row", "theme": "neon",
-  "background": { "gradient": ["#0b0718", "#03070d"], "angle": 160 }, ... }
+  "background": { "gradient": ["#0b0718", "#03070d"], "angle": 160 },
+  "divider": { "width": 1, "color": "accent" }, ... }
 ```
+
+`divider` colours the line between the sidebar and the rest in the theme's accent, the rule's cyan. It follows whatever theme the layout shows, so with another theme it takes that theme's accent.
 
 Panes framed with `"focus": { "width": 1, "color": "accent" }`, as Herdr's own layouts are, get a cyan border while they have the keyboard. With the theme on, the panel's `style.palette: "theme"` and the TUI's `--palette theme` look neon too.
 
-The Better mods and the Branch panels in this repository follow it: while the neon theme is on, their panel headers (Files, Changes, PRs, Issues), Better Sidebar's Spaces and Agents strip and Better Config's title get this panel's hatched ground and gradient rule, and Better Tabs' bar gets the rule. Each carries the same small `neon.js`; with another theme they look as before.
+The Better mods and the Branch panels in this repository follow it: while the neon theme is on, their panel headers (Files, Changes, PRs, Issues), Better Sidebar's Spaces and Agents strip and Better Config's title get this panel's hatched ground and gradient rule, and Better Tabs' bar gets the rule; Better Sidebar starts it in cyan under Herdr's own sidebar header and ends it in magenta under its panel toggle, so one line crosses the window. Each carries the same small `neon.js`; with another theme they look as before.
 
 ## The TUI
 
