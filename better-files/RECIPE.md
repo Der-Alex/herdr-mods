@@ -4,7 +4,7 @@ A read-only file browser for a person's Herdr window, for directing agents rathe
 
 ## What you see
 
-One framed sidebar panel, radius 10, with a 42px header: the plain title Files with the folder's name in a badge, and on the right a folder icon, a menu opening the folder in each editor or Finder (this computer only), and refresh.
+One framed sidebar panel, radius 10, with a 42px header: the plain title Files with the folder's name in a badge, and on the right a folder icon, a menu opening the folder in each editor or the file manager (this computer only), and refresh.
 
 Below is a tree for the focused pane's folder: 26px rows of chevron, icon, name and a Git letter, directories first, with a dot on a folder holding changes. The icon is the plain file or folder in `muted`, or, when Better Icons is installed, its full-colour Material icon at 14px, open folders with their open icon. A file or diff tab has no folder, so focusing one leaves the tree where it was.
 
@@ -12,7 +12,7 @@ A click opens the file in one shared centre tab per space, named after the file,
 
 Image files show fitted to the pane instead of the editor, through a copy in `mods/better-files/cache/`, because `image()` only loads from under Herdr's folder; a space on another machine says it can't show them. The centre tab has one title row, the same as a Better Changes diff: file, folder and Preview while it's the shared one. It publishes that to `shared("pane-heads")`, which Better Changes' pane header shows, and draws its own 30px row only under another header. A Markdown file opens rendered, with Preview and Code beside Keep tab to switch to the file view; the choice is kept per tab, and `settings.markdown` sets the first one. Keep tab and Open in float over the file's top right corner, or sit in that row. Below is the file, read-only, in the code font at the terminals' size.
 
-Right-click opens a popup at the pointer with groups separated by rules: Open and Open in new tab (files); Open in each editor, Open in default app (files) and Show in Finder (this computer only); Show diff (a changed file, with Better Changes installed); Copy relative path and Copy full path; Send to each agent in the space, each also as `<name> (spawn)`, and to a new one of each installed kind.
+Right-click opens a popup at the pointer with groups separated by rules: Open and Open in new tab (files); Open in each editor, Open in default app (files, macOS only) and Show in the file manager (this computer only); Show diff (a changed file, with Better Changes installed); Copy relative path and Copy full path; Send to each agent in the space, each also as `<name> (spawn)`, and to a new one of each installed kind.
 
 Choosing an agent opens a box docked at the bottom of the panel with who it goes to, the path, and a prompt that's required. Only Send delivers.
 
@@ -28,7 +28,7 @@ The menu closes at once, so it leaves its question in `better-files.compose` for
 
 The message to an agent is the prompt then the path, not the file's text. A running agent gets `hc send`; `(spawn)` runs `hc run --bg --parent <agent> --cwd <folder> <program> <message>` directly, so no shell sees the message; a new agent gets `tab.new` with the message as its first prompt.
 
-Editors are found by macOS app ID with `mdfind`, because a Nix or per-user install isn't in `/Applications`, and opened with `open -b`.
+On macOS, editors (`MAC_EDITORS` in `files/model.js`) are found by app ID with `mdfind`, because a Nix or per-user install isn't in `/Applications`, and opened with `open -b`; the file manager is Finder (`open -R`, `open`). On Linux, editors (`LINUX_EDITORS`) are commands found on PATH with `sh -c 'command -v "$1"'` and started detached with `setsid -f`, so `exec` doesn't wait for the window to close; the file manager is Dolphin (`dolphin --select`) when it's on PATH, else `xdg-open` on the folder, and there's no Open in default app. Terminal editors (`TERMINAL_EDITORS`, Neovim) are found on PATH on both and opened with `run("terminal.open", { argv: [cmd, path], folder: root, place: "tab" })`, so they start in the project's folder. A `settings.editors` string is an app ID on macOS and a command on Linux (`settingsEditor`). A menu tells editors apart by `editorId`: the app ID, or the command. The sidebar clears a launch error when it starts, since shared state outlives a restart.
 
 Show diff hands over in the form Better Changes' own list uses: `better-changes.selection` and `better-changes.diff-tabs`, keyed to the Git root, with `tab.new` when no diff tab is open.
 

@@ -2,9 +2,9 @@
 import { div } from "gpui-kit";
 import { h_flex, v_flex } from "gpui-base";
 import { openOverlay, shared, theme } from "herdr";
-import { baseName, holdsChange, TOTAL_ROWS } from "../files/model.js";
+import { baseName, editorId, holdsChange, TOTAL_ROWS } from "../files/model.js";
 import { viewerEntries } from "../actions/open.js";
-import { foundEditors } from "../actions/outside.js";
+import { fileManager, foundEditors } from "../actions/outside.js";
 import { agentName } from "../actions/agents.js";
 import { TEXT, Badge, Button, Chevron, FileIcon, Icon, markColor, IconButton, Message, Panel, PanelHeader, StatusLetter, TextBox } from "./ui.js";
 
@@ -109,10 +109,11 @@ export const treeMethods = {
     }
   },
 
-  // The whole folder on show, in an editor or Finder. This computer's apps only.
+  // The whole folder on show, in an editor or the file manager. This computer's apps only.
   folderMenu(t) {
-    const FINDER = "finder";
+    const FILES = "file-manager";
     const editors = foundEditors();
+    const fm = fileManager();
     return this.chooser({
       id: "files-folder",
       accessibilityLabel: "Open this folder",
@@ -132,12 +133,12 @@ export const treeMethods = {
         .hover((el) => el.bg(t.hover).text_color(t.foreground))
         .child(Icon("folder", 15)),
       choices: [
-        ...editors.map((e) => ({ id: e.bundle, label: `Open in ${e.name}` })),
-        { id: FINDER, label: "Open in Finder" },
+        ...editors.map((e) => ({ id: editorId(e), label: `Open in ${e.name}` })),
+        ...(fm ? [{ id: FILES, label: `Open in ${fm.name}` }] : []),
       ],
       onChoose: (id) => {
-        if (id === FINDER) this.openWithDefault(this.root);
-        else this.openInEditor(editors.find((e) => e.bundle === id), this.root);
+        if (id === FILES) this.openInFileManager(this.root);
+        else this.openInEditor(editors.find((e) => editorId(e) === id), this.root, this.root);
       },
     });
   },

@@ -15,11 +15,11 @@ const source = `const { highlightLines, tokenizeLine, syntaxColors, languageOf: 
     .replace(/^import\s+[\s\S]*?;$/gm, '')
     .replace(/^export default (\w+);$/m, 'globalThis.Mod = $1;')
     .replace(/^export /gm, '')
-  + '\nObject.assign(globalThis, { parseStatus, parseHunks, buildRows, highlightLines, tokenizeLine, lexerLanguage, viewable, languageOf, sortEntries, markdownBlocks, resolvePath, isMarkdown, MAX_CHARS });';
+  + '\nObject.assign(globalThis, { settingsEditor, parseStatus, parseHunks, buildRows, highlightLines, tokenizeLine, lexerLanguage, viewable, languageOf, sortEntries, markdownBlocks, resolvePath, isMarkdown, MAX_CHARS });';
 
 const TREE = { '/repo': [['d', 'src'], ['f', 'b.md'], ['f', 'a.md']], '/repo/src': [['f', 'main.go']] };
 
-function world({ copyImage, diff = '', layout = {}, mode = 'sidebar', viewer, file, target, tree = TREE, status = ' M b.md\0M  src/main.go\0?? new.txt\0', editors = ['dev.zed.Zed'], top = '/repo', machine = null, cwd = '/repo', texts = {}, agents = [], known = [], sharedInit = {}, hcResult } = {}) {
+function world({ copyImage, diff = '', layout = {}, mode = 'sidebar', viewer, file, target, tree = TREE, status = ' M b.md\0M  src/main.go\0?? new.txt\0', editors = ['dev.zed.Zed'], commands = [], platform = 'macos', top = '/repo', machine = null, cwd = '/repo', texts = {}, agents = [], known = [], sharedInit = {}, hcResult } = {}) {
   const store = new Map(Object.entries(sharedInit));
   const ran = [], execs = [], sent = [], clipboard = [], closed = [], overlays = [], urls = [];
   const live = { layout, panes: [{ pane: 'p1', tab: 'tab1', cwd }], focused: { space: 's', tab: 'tab1', pane: 'p1', cwd }, agents, texts: { ...texts } };
@@ -61,7 +61,7 @@ function world({ copyImage, diff = '', layout = {}, mode = 'sidebar', viewer, fi
     Scrollbar: { vertical: () => el() }, TextView: { markdown: (id, text) => el().id(id).child(`md:${text}`) }, v_virtual_list: (_id, count, sizes, key, render) => { const e = el().id('viewer-list'); if (Array.isArray(sizes) && sizes.length !== count) throw new Error('sizes'); for (let i = 0; i < count; i++) key(i); e.children(render({ start: 0, end: Math.min(count, 60) })); return e; }, Editor: { new: (s) => el().child(s.text) }, EditorState: { new: (o) => { const s = state(o); context.lastCode = s; return s; } },
     themes: () => [],
     theme: () => new Proxy({}, { get: (_t, k) => `#${String(k)}` }),
-    settings: () => ({ font_family: 'Code', font_size: 14 }), window: () => ({ platform: 'macos' }),
+    settings: () => ({ font_family: 'Code', font_size: 14 }), window: () => ({ platform }),
     props: () => ({ mode, viewer, file, target, space: 's', overlay: 'ov1' }),
     spaces: () => [{ id: 's', active: true, folder: '/repo', machine, tabs: [{ id: 'tab1' }] }],
     panes: () => live.panes, focused: () => live.focused, agents: () => live.agents,
@@ -78,6 +78,7 @@ function world({ copyImage, diff = '', layout = {}, mode = 'sidebar', viewer, fi
     exec: async (bin, args, options) => {
       execs.push([bin, ...args]);
       if (bin === 'sh' && args[2] === 'copy-image') return copyImage ?? { code: 0 };
+      if (bin === 'sh' && args[1] === 'command -v "$1"') return commands.includes(args[3]) ? { code: 0, stdout: `/usr/bin/${args[3]}\n` } : { code: 1, stdout: '' };
       if (bin === 'sh') return { code: 0, stdout: (tree[args.at(-1)] ?? []).flatMap(([k, n]) => [k, n, '']).join('\0').replace(/\0\0/g, '\0') };
       if (bin === 'mdfind') return { code: 0, stdout: editors.some((b) => args[0].includes(b)) ? '/Apps/It.app\n' : '' };
       if (bin === 'git' && args[0] === 'rev-parse') return top ? { code: 0, stdout: `${top}\n` } : { code: 128, stdout: '' };
@@ -471,7 +472,7 @@ test('the folder icon opens the whole folder in an editor or Finder, here only',
   assert.match(strings(find(h.mod.render(), 'files-folder-menu')), /Open in Zed[\s\S]*Open in Finder/);
   click(h, 'files-folder-option-dev.zed.Zed');
   find(h.mod.render(), 'files-folder').handlers.open(true, h.cx);
-  click(h, 'files-folder-option-finder');
+  click(h, 'files-folder-option-file-manager');
   await h.flush();
   assert.deepEqual(JSON.parse(JSON.stringify(h.execs.filter(([b]) => b === 'open'))), [['open', '-b', 'dev.zed.Zed', '/repo'], ['open', '/repo']]);
   const far = await ready({ machine: 'box', sharedInit: { 'better-files.editors': zed } });
@@ -481,6 +482,79 @@ test('the folder icon opens the whole folder in an editor or Finder, here only',
 test('only editors that are installed are found', async () => {
   const h = await ready({ editors: ['dev.zed.Zed'] });
   assert.deepEqual([...h.store.get('better-files.editors').map((e) => e.name)], ['Zed']);
+});
+
+test('Neovim is found on PATH, on Linux too, where no app ID is looked up', async () => {
+  const h = await ready({ commands: ['nvim'] });
+  assert.deepEqual([...h.store.get('better-files.editors').map((e) => e.name)], ['Zed', 'Neovim']);
+  const linux = await ready({ platform: 'linux', commands: ['nvim'] });
+  assert.deepEqual([...linux.store.get('better-files.editors').map((e) => e.name)], ['Neovim']);
+  assert.ok(!linux.execs.some(([b]) => b === 'mdfind'));
+  const none = await ready({ platform: 'linux' });
+  assert.deepEqual([...none.store.get('better-files.editors')], []);
+});
+
+test('Neovim opens a file or the folder in a terminal tab, started in the project', async () => {
+  const nvim = [{ name: 'Neovim', cmd: 'nvim', terminal: true }];
+  const opened = (h) => h.ran.filter(([n]) => n === 'terminal.open').map(([, a]) => a);
+  const menu = await menuOf({ sharedInit: { 'better-files.editors': nvim } });
+  assert.match(labels(menu), /Open in Neovim/);
+  click(menu, 'files-menu-editor-nvim');
+  assert.deepEqual(opened(menu), [{ argv: ['nvim', '/repo/b.md'], folder: '/repo', place: 'tab' }]);
+  const file = { path: '/repo/a.md', root: '/repo', on: null };
+  const viewer = await ready({ mode: 'viewer', viewer: 'v', file, texts: { '/repo/a.md': 'x' }, sharedInit: { 'better-files.editors': nvim } });
+  find(viewer.mod.render(), 'viewer-open-in').handlers.open(true, viewer.cx);
+  click(viewer, 'viewer-open-in-option-nvim');
+  assert.deepEqual(opened(viewer), [{ argv: ['nvim', '/repo/a.md'], folder: '/repo', place: 'tab' }]);
+  const tree = await ready({ commands: ['nvim'] });
+  find(tree.mod.render(), 'files-folder').handlers.open(true, tree.cx);
+  click(tree, 'files-folder-option-nvim');
+  assert.deepEqual(opened(tree), [{ argv: ['nvim', '/repo'], folder: '/repo', place: 'tab' }]);
+  assert.ok(![menu, viewer, tree].some((h) => h.execs.some(([b]) => b === 'open')), 'no app is opened');
+});
+
+test('on Linux, editors are commands on PATH, started detached, and files show in Dolphin', async () => {
+  const launched = (h) => h.execs.filter(([b, , script]) => b === 'sh' && String(script).includes('setsid')).map((e) => e.slice(4));
+  const h = await ready({ platform: 'linux', commands: ['code', 'nvim', 'dolphin'] });
+  assert.deepEqual([...h.store.get('better-files.editors').map((e) => e.name)], ['VS Code', 'Neovim']);
+  find(h.mod.render(), 'files-folder').handlers.open(true, h.cx);
+  assert.match(strings(find(h.mod.render(), 'files-folder-menu')), /Open in VS Code[\s\S]*Open in Neovim[\s\S]*Open in Dolphin/);
+  click(h, 'files-folder-option-code');
+  find(h.mod.render(), 'files-folder').handlers.open(true, h.cx);
+  click(h, 'files-folder-option-file-manager');
+  await h.flush();
+  assert.deepEqual(launched(h), [['code', '/repo'], ['dolphin', '/repo']]);
+  assert.ok(!h.execs.some(([b]) => b === 'open' || b === 'mdfind'), 'nothing of macOS');
+  const shared_ = { 'better-files.editors': [{ name: 'VS Code', cmd: 'code' }], 'better-files.file-manager': { name: 'Dolphin', cmd: 'dolphin', select: true } };
+  const menu = await menuOf({ platform: 'linux', sharedInit: shared_ });
+  assert.match(labels(menu), /Open in VS Code[\s\S]*Show in Dolphin/);
+  assert.doesNotMatch(labels(menu), /default app|Finder/);
+  click(menu, 'files-menu-reveal');
+  click(menu, 'files-menu-editor-code');
+  await menu.flush();
+  assert.deepEqual(launched(menu), [['dolphin', '--select', '/repo/b.md'], ['code', '/repo/b.md']]);
+});
+
+test('on Linux without Dolphin, the default file manager opens the folder', async () => {
+  const h = await ready({ platform: 'linux' });
+  assert.deepEqual(JSON.parse(JSON.stringify(h.store.get('better-files.file-manager'))), { name: 'file manager', cmd: 'xdg-open' });
+  const menu = await menuOf({ platform: 'linux' });
+  assert.match(labels(menu), /Show in file manager/);
+  click(menu, 'files-menu-reveal');
+  await menu.flush();
+  assert.deepEqual(menu.execs.find(([b, , script]) => b === 'sh' && String(script).includes('setsid')).slice(4), ['xdg-open', '/repo']);
+});
+
+test('settings add editors by app ID on macOS and by command on Linux', async () => {
+  const { settingsEditor } = (await ready()).context;
+  const mac = settingsEditor('com.jetbrains.PhpStorm', true);
+  assert.deepEqual({ ...mac }, { name: 'com.jetbrains.PhpStorm', bundle: 'com.jetbrains.PhpStorm' });
+  assert.deepEqual({ ...settingsEditor('zed', false) }, { name: 'zed', cmd: 'zed' });
+  assert.equal(settingsEditor({ name: 'X', bundle: 'a.b' }, false), null, 'no app IDs on Linux');
+  assert.equal(settingsEditor({ name: 'Kate', cmd: 'kate' }, true), null, 'no detached commands on macOS');
+  assert.equal(settingsEditor({ name: 'Helix', cmd: 'hx', terminal: true }, true).cmd, 'hx');
+  assert.equal(settingsEditor({ cmd: 'x' }, false), null);
+  assert.equal(settingsEditor(null, false), null);
 });
 
 const FILE_TARGET = { path: '/repo/b.md', root: '/repo', on: null, top: '/repo', dir: false, relative: 'b.md', changed: true, staged: false };

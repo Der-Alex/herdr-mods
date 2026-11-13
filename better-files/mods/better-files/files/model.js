@@ -3,9 +3,9 @@ export const PER_FOLDER = 500;
 export const TOTAL_ROWS = 5000;
 export const MAX_CHARS = 400000;
 
-// Editors found by app ID: a Nix or per-user install isn't in /Applications.
-// More can be added under `settings.editors` in mod.json.
-export const EDITORS = [
+// Editors only installed ones of are offered. More can be added under `settings.editors`.
+// macOS: found by app ID, because a Nix or per-user install isn't in /Applications.
+export const MAC_EDITORS = [
   { name: "Zed", bundle: "dev.zed.Zed" },
   { name: "VS Code", bundle: "com.microsoft.VSCode" },
   { name: "Cursor", bundle: "com.todesktop.230313mzl4w4u92" },
@@ -13,6 +13,38 @@ export const EDITORS = [
   { name: "Sublime Text", bundle: "com.sublimetext.4" },
   { name: "Nova", bundle: "com.panic.Nova" },
 ];
+
+// Linux: found by command on PATH.
+export const LINUX_EDITORS = [
+  { name: "VS Code", cmd: "code" },
+  { name: "Zed", cmd: "zeditor" },
+  { name: "Cursor", cmd: "cursor" },
+  { name: "Windsurf", cmd: "windsurf" },
+  { name: "Sublime Text", cmd: "subl" },
+];
+
+// Both: found on PATH, and run in a Herdr terminal tab of their own instead of a window.
+export const TERMINAL_EDITORS = [{ name: "Neovim", cmd: "nvim", terminal: true }];
+
+// What a menu calls an editor: its app ID, or its command.
+export const editorId = (editor) => editor.bundle ?? editor.cmd;
+
+// Where a file is shown. Linux uses Dolphin when it's installed, else the desktop's default
+// file manager, which can open a folder but not select a file in it.
+export const FINDER = { name: "Finder", cmd: "open" };
+export const DOLPHIN = { name: "Dolphin", cmd: "dolphin", select: true };
+export const XDG_FILES = { name: "file manager", cmd: "xdg-open" };
+
+// A `settings.editors` entry: a string is an app ID on macOS and a command elsewhere.
+export const settingsEditor = (entry, mac) => {
+  const editor =
+    typeof entry === "string" ? { name: entry, [mac ? "bundle" : "cmd"]: entry } : entry;
+  if (!editor || typeof editor.name !== "string") return null;
+  if (typeof editor.bundle === "string" && editor.bundle) return mac ? editor : null;
+  // setsid, which starts a Linux app detached, isn't on macOS: there a command must be a terminal one.
+  if (typeof editor.cmd === "string" && editor.cmd) return mac && !editor.terminal ? null : editor;
+  return null;
+};
 
 const LANGUAGES = {
   ts: "js",

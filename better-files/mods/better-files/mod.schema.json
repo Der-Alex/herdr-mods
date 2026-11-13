@@ -91,7 +91,7 @@
         },
         "editors": {
           "title": "More editors",
-          "description": "macOS app IDs to add to Open in, such as dev.zed.Zed. Shown only if installed.",
+          "description": "Editors to add to Open in: macOS app IDs such as dev.zed.Zed, or on Linux commands such as zeditor. Shown only if installed.",
           "type": "array",
           "items": {
             "type": "string"
