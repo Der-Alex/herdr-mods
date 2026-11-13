@@ -6,7 +6,7 @@ import { agents, focused, theme, setAgentOrder } from "herdr";
 import { Spaces } from "./spaces.js";
 import { Agents } from "./agents.js";
 import { TEXT, Badge, Rail } from "./ui.js";
-import { NeonHeader } from "../neon.js";
+import { neonTheme, NeonHeader, NeonRuleStart } from "../neon.js";
 
 const TABS = ["spaces", "agents"];
 
@@ -35,7 +35,9 @@ export class Lists {
       .min_h(0)
       .bg(t.chrome)
       .text_size(TEXT.body)
-      .on_size_change((size, cx) => this.spaces.resized(size, cx));
+      .on_size_change((size, cx) => this.spaces.resized(size, cx))
+      // With the neon theme on, a cyan line opens the sidebar where Better Tabs' rule begins.
+      .when(neonTheme(), (el) => el.child(NeonRuleStart()));
     this.spaces.under = null;
     this.spaces.quiet = null;
     this.spaces.above = null;

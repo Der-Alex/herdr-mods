@@ -14,7 +14,7 @@ The PR sits at the right of the name row. Show the newest matching open PR as it
 
 When other machines are known, add a 26px machine header with a monitor/server icon, connection indication, fold control, and new-space button. A mod narrower than 160px becomes a compact rail of space numbers and a PR icon, or the existing attention glyph when no PR exists. Use the element's actual size, not an assumed layout node name.
 
-With Claude Usage's neon theme on, `neon.js` (shared byte for byte between the mods) gives the Spaces and Agents strip that panel's look: a faint hatched ground and a 2px cyan, violet, magenta rule in place of the border. It checks `theme()` against `themes()`' neon entry, so any way of picking the theme counts; with another theme nothing changes.
+With Claude Usage's neon theme on, `neon.js` (shared byte for byte between the mods) gives the Spaces and Agents strip that panel's look, opens the lists with a 2px cyan line (the rule's first colour; with Herdr's own sidebar header block at 39px it sits level with Better Tabs' rule), and ends that rule in magenta under the panel toggle: a faint hatched ground and a 2px cyan, violet, magenta rule in place of the border. It checks `theme()` against `themes()`' neon entry, so any way of picking the theme counts; with another theme nothing changes.
 
 ## How it behaves
 
