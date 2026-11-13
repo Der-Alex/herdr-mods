@@ -190,7 +190,7 @@ export const tabBarMethods = {
       .child(this.renderTabList(t))
       .child(this.renderToolbar(t));
     // With the neon theme on, a gradient rule takes the bottom border's place.
-    if (neonTheme()) bar.border_color("#00000000").child(NeonRule());
+    if (neonTheme()) bar.border_b(0).child(NeonRule());
     if (window()?.buttons) bar.children(this.windowButtons());
     const preview = this.dragPreview(t);
     if (preview) bar.child(preview);

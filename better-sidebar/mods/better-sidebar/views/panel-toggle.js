@@ -36,7 +36,7 @@ export class PanelToggle {
       .border_b(1)
       .border_color(t.border);
     // With the neon theme on, Better Tabs' rule ends in magenta here, so this bar carries it on.
-    if (neonTheme()) bar.relative().border_color("#00000000").child(NeonRuleEnd());
+    if (neonTheme()) bar.relative().border_b(0).child(NeonRuleEnd());
     if (!panel) return bar;
     return bar.child(
       IconButton({

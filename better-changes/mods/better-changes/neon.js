@@ -59,7 +59,8 @@ export function NeonRuleStart() {
 export function NeonHeader(el, { hatch = true } = {}) {
   if (!neonTheme()) return el;
   const t = theme();
-  let header = el.relative().border_color("#00000000");
+  // No bottom border at all, so the rule sits on the edge rather than a pixel above it.
+  let header = el.relative().border_b(0);
   if (hatch) header = header.child(neonLayer(Background.pattern_slash(`${neonSolid(t.accent)}0c`, 1, 7)));
   return header.child(NeonRule());
 }

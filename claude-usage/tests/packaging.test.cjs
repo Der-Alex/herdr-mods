@@ -88,7 +88,7 @@ test('neon.js decorates a header only while the neon theme is the one in use', (
   assert.equal(context.neonTheme(), true);
   const header = context.NeonHeader(el());
   assert.equal(header.kids.length, 2, 'hatch and rule');
-  assert.ok(header.calls.some(([k, v]) => k === 'border_color' && v === '#00000000'));
+  assert.ok(header.calls.some(([k, v]) => k === 'border_b' && v === 0));
   assert.equal(context.NeonHeader(el(), { hatch: false }).kids.length, 1, 'rule only');
 
   current = { ...neonColors, accent: '#a7b4c6', chrome: '#1b1d22' };
