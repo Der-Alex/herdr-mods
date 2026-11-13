@@ -4,6 +4,7 @@ import { h_flex } from "gpui-base";
 import { theme, run, props, layout, nextCommand } from "herdr";
 import { findNode } from "./find-node.js";
 import { IconButton } from "./ui.js";
+import { neonTheme, NeonRuleEnd } from "../neon.js";
 
 export class PanelToggle {
   init(_props, cx) {
@@ -34,6 +35,8 @@ export class PanelToggle {
       .bg(t.chrome)
       .border_b(1)
       .border_color(t.border);
+    // With the neon theme on, Better Tabs' rule ends in magenta here, so this bar carries it on.
+    if (neonTheme()) bar.relative().border_color("#00000000").child(NeonRuleEnd());
     if (!panel) return bar;
     return bar.child(
       IconButton({

@@ -48,6 +48,7 @@ function harness(view) {
     spaces: () => live.spaces,
     run: (name, args) => commands.push({ name, args }),
     theme: () => colors,
+    themes: () => [],
     shared: (key) => live.shared[key],
     setShared: (key, value) => {
       live.shared[key] = value;
@@ -80,7 +81,7 @@ function read(file) {
 
 function load(h, file, name) {
   if (!h.kitLoaded) {
-    vm.runInContext(read("views/find-node.js") + read("views/ui.js"), h.context);
+    vm.runInContext(read("views/find-node.js") + read("neon.js") + read("views/ui.js"), h.context);
     h.kitLoaded = true;
   }
   const source = read(file);

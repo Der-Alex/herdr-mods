@@ -43,6 +43,12 @@ export function NeonRule() {
     .child(neonHalf(t.unknown, t.ansi5));
 }
 
+// The rule's last colour alone, for a bar that continues one drawn beside it
+// (Better Sidebar's panel toggle, right of Better Tabs' bar).
+export function NeonRuleEnd() {
+  return div().absolute().left(0).right(0).bottom(0).h(2).bg(neonSolid(theme().ansi5));
+}
+
 // A header in the neon look while the theme is on; `hatch: false` keeps only the rule.
 export function NeonHeader(el, { hatch = true } = {}) {
   if (!neonTheme()) return el;
