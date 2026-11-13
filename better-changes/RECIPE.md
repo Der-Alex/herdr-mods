@@ -22,7 +22,7 @@ Opening a commit replaces the list: a 42px row with a back button, the short has
 
 A diff opens as a centre tab named after the file. Rows are in the code font at the terminals' size (`settings().font_size`) and 1.5 times as tall, with old and new line numbers. Side by side has Before and After columns that scroll together. Additions have an `ansi2` sign on an `ansi2` tint (alpha `26`), removals the same in `ansi1`, and hunk headings `accent` on `raised`. The code on every row is syntax-coloured, and text that isn't a token is `foreground`, so the sign and tint alone say a line was added or removed.
 
-With Claude Usage's neon theme on, `neon.js` (shared byte for byte between the mods) gives its headers that panel's look: a faint hatched ground and a 2px cyan, violet, magenta rule in place of the border. It checks `theme()` against `themes()`' neon entry, so any way of picking the theme counts; with another theme nothing changes.
+With Claude Usage's neon theme on, `neon.js` (shared byte for byte between the mods) gives its headers, the pane header above each terminal and the diff tab's bar that panel's look: a faint hatched ground and a 2px cyan, violet, magenta rule in place of the border. It checks `theme()` against `themes()`' neon entry, so any way of picking the theme counts; with another theme nothing changes.
 
 ## How it behaves
 

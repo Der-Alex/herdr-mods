@@ -4,6 +4,7 @@
 import { div, svg, image } from "gpui-kit";
 import { h_flex } from "gpui-base";
 import { panes, props, run, theme, home, shared } from "herdr";
+import { NeonHeader } from "../neon.js";
 
 function programIcon(program, size, color) {
   if (!program?.icon) return null;
@@ -48,16 +49,19 @@ export const paneHeaderMethods = {
       : programIcon(p.program, 14, t.dim);
     const pane = p.pane;
 
-    return h_flex()
-      .id(`pane-head-${pane}`)
-      .size_full()
-      .px(10)
-      .gap(8)
-      .items_center()
-      .bg(t.background)
-      .border_b(1)
-      .border_color(t.border)
-      .text_size(12)
+    // With the neon theme on, neon.js gives it a hatched ground and a gradient rule.
+    return NeonHeader(
+      h_flex()
+        .id(`pane-head-${pane}`)
+        .size_full()
+        .px(10)
+        .gap(8)
+        .items_center()
+        .bg(t.background)
+        .border_b(1)
+        .border_color(t.border)
+        .text_size(12),
+    )
       .on_hover((hovered, cx) => {
         this.hovered = hovered;
         cx.notify();

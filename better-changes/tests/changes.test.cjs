@@ -59,6 +59,7 @@ function load(cwd, { props, saved, home = "/nonexistent", tree, calls = [] } = {
     "Panel",
     "PanelHeader",
     "PaneBar",
+    "NeonHeader",
     "HeaderTab",
     "IconButton",
     "TextButton",

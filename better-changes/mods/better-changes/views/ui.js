@@ -94,15 +94,17 @@ export function PanelHeader() {
 // A row matching Herdr's pane header, for a layout that doesn't use ours.
 export function PaneBar() {
   const t = theme();
-  return h_flex()
-    .h(SIZE.paneHeader)
-    .flex_none()
-    .px(10)
-    .gap(8)
-    .items_center()
-    .border_b(1)
-    .border_color(t.border)
-    .text_size(TEXT.small);
+  return NeonHeader(
+    h_flex()
+      .h(SIZE.paneHeader)
+      .flex_none()
+      .px(10)
+      .gap(8)
+      .items_center()
+      .border_b(1)
+      .border_color(t.border)
+      .text_size(TEXT.small),
+  );
 }
 
 function Badge(text) {
