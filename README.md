@@ -47,6 +47,12 @@ Your PR and your Linear issue, next to the branch.
 - [Branch PR](branch-pr/README.md) (`branch-pr`): GitHub PR panel that shows what stands between a PR and a merge, lists its files with diffs, hands failures and comments to agents, and merges when ready. Needs Go 1.23+ and `gh`.
 - [Branch Issue](branch-issue/README.md) (`branch-issue`): Linear panel that follows the branch, edits state, priority and assignee, and opens a worktree with an agent holding the issue. Needs Go 1.23+ and a Linear API key.
 
+### Claude Usage
+
+Your Claude plan limits, at a glance.
+
+- [Claude Usage](claude-usage/README.md) (`claude-usage`): the current session, the week across all models and the week of one model (Fable by default), each with the time to its reset, in a neon telemetry panel or as a TUI in a terminal pane, with a matching neon theme for all of Herdr. Needs Go 1.23+ and Claude Code logged in with a subscription.
+
 ## Estro: all of them in one layout
 
 [Estro](estro/RECIPE.md) puts every mod in one window for directing agents: spaces and agents on the left, the session in the middle, and Files, Changes, PRs and Issues in a panel on the right. One prompt installs the layout and all seven mods:

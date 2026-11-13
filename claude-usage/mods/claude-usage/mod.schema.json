@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Claude Usage mod.json",
+  "description": "What Herdr reads from Claude Usage's mod.json, and the settings it takes.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "This file's schema, for editors."
+    },
+    "version": {
+      "type": "string",
+      "description": "The mod's version."
+    },
+    "title": {
+      "type": "string",
+      "description": "The mod's name, as Herdr shows it."
+    },
+    "place": {
+      "enum": [
+        "left",
+        "right",
+        "top",
+        "bottom",
+        "none"
+      ],
+      "description": "Where Herdr first docks the mod. \"none\": only where a layout or another mod puts it."
+    },
+    "size": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Its first size, in pixels."
+    },
+    "focusable": {
+      "type": "boolean",
+      "description": "Lets pane.go give a shown copy the keyboard."
+    },
+    "overlay": {
+      "type": "object",
+      "description": "How mod.open shows it.",
+      "properties": {
+        "kind": {
+          "enum": [
+            "dialog",
+            "popup",
+            "window"
+          ]
+        },
+        "width": {
+          "type": "number",
+          "minimum": 0
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "description": "Your changes. A setting left out uses its default.",
+      "additionalProperties": false,
+      "properties": {
+        "display": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "title": "Display",
+              "description": "Where the telemetry shows: \"panel\" draws it in this mod's panel; \"terminal\" runs it as a TUI in a terminal pane, opened by the toolbar button or claude-usage.open.",
+              "enum": [
+                "panel",
+                "terminal"
+              ],
+              "default": "panel"
+            }
+          }
+        },
+        "refresh": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "every": {
+              "title": "Refresh",
+              "description": "How often the usage endpoint is read while the panel or the terminal shows it. Anything under 30s counts as 30s.",
+              "type": [
+                "string",
+                "integer"
+              ],
+              "format": "duration",
+              "pattern": "^\\s*\\d+(\\.\\d+)?\\s*(ms|s|m|h)\\s*$",
+              "default": "60s"
+            }
+          }
+        },
+        "model": {
+          "title": "Model",
+          "description": "The model whose weekly limit the third card shows, by the name Claude gives it.",
+          "type": "string",
+          "minLength": 1,
+          "default": "Fable"
+        },
+        "style": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "palette": {
+              "title": "Palette",
+              "description": "\"neon\": cyan and magenta on near black, whatever the theme; \"theme\": the same roles in Herdr's theme colours (the terminal's own colours in the TUI).",
+              "enum": [
+                "neon",
+                "theme"
+              ],
+              "default": "neon"
+            }
+          }
+        },
+        "terminal": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "place": {
+              "title": "Terminal place",
+              "description": "Where terminal mode opens the TUI: a split \"right\" or \"down\" of the focused pane, or its own \"tab\".",
+              "enum": [
+                "right",
+                "down",
+                "tab"
+              ],
+              "default": "right"
+            }
+          }
+        }
+      }
+    }
+  }
+}
