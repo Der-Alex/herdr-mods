@@ -14,6 +14,8 @@ While dragging, the source tab dims to 35%, a copy follows the pointer, and a 2p
 
 The ⋮ menu is a 240px popup on `popover` with 5px padding and 32px rows, listing hidden buttons alphabetically, each with a 22px pin button.
 
+With Claude Usage's neon theme on, `neon.js` (shared byte for byte between the mods) gives the bar's bottom border (a rule only, no hatching) that panel's look: a faint hatched ground and a 2px cyan, violet, magenta rule in place of the border. It checks `theme()` against `themes()`' neon entry, so any way of picking the theme counts; with another theme nothing changes.
+
 ## How it behaves
 
 A press becomes a drag only after 400ms and 12px of movement, for tabs and toolbar buttons alike; anything less is a click. Nothing moves until release. Leaving the bar cancels a drag. Dropping a tab on + puts it last. A tab's click selects it, double-click renames it through `tab.rename`, and right-click opens the shipped `menu` mod. `tab.move` takes a one-based index.

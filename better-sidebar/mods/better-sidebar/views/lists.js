@@ -6,6 +6,7 @@ import { agents, focused, theme, setAgentOrder } from "herdr";
 import { Spaces } from "./spaces.js";
 import { Agents } from "./agents.js";
 import { TEXT, Badge, Rail } from "./ui.js";
+import { NeonHeader } from "../neon.js";
 
 const TABS = ["spaces", "agents"];
 
@@ -115,16 +116,19 @@ export class Lists {
         .child(label)
         // The count badge the group headers use.
         .when(count !== null, (el) => el.child(Badge(count)));
-    return h_flex()
-      .px(8)
-      .pt(6)
-      .pb(6)
-      .mb(4)
-      .border_b(1)
-      .border_color(t.border)
-      .flex_none()
-      .gap(6)
-      .items_center()
+    // With the neon theme on, neon.js gives the strip a hatched ground and a gradient rule.
+    return NeonHeader(
+      h_flex()
+        .px(8)
+        .pt(6)
+        .pb(6)
+        .mb(4)
+        .border_b(1)
+        .border_color(t.border)
+        .flex_none()
+        .gap(6)
+        .items_center(),
+    )
       .child(
         h_flex()
           .flex_1()

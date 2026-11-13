@@ -22,6 +22,8 @@ Comments has threads separated by rules: each comment with author, age and a cop
 
 A missing or rejected key replaces everything below the tabs with what's wrong, the command to run, Create a key and Try again.
 
+With Claude Usage's neon theme on, `neon.js` (shared byte for byte between the mods) gives its headers that panel's look: a faint hatched ground and a 2px cyan, violet, magenta rule in place of the border. It checks `theme()` against `themes()`' neon entry, so any way of picking the theme counts; with another theme nothing changes.
+
 ## How it behaves
 
 The panel follows the active terminal's cwd and branch. Branch joins `branch.<branch>.herdr-issue` (comma separated) with `TEAM-123` patterns in the branch name, capped by `branch.max_identifiers`, and confirms each with Linear; unknown ones are dropped. Only an identifier in the binding and not the branch name can be unlinked.

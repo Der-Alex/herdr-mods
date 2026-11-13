@@ -24,6 +24,8 @@ Files lists the PR's files from `repos/R/pulls/N/files` (paginated, read when th
 
 Checks has a collapsible group per workflow run, those needing attention first and failures open. A row is a chevron, state icon and name, then the time or, on a failure, Fix with agent. Opening one loads its job: View on GitHub, steps, Failed step output, and the log in the code font.
 
+With Claude Usage's neon theme on, `neon.js` (shared byte for byte between the mods) gives its headers that panel's look: a faint hatched ground and a 2px cyan, violet, magenta rule in place of the border. It checks `theme()` against `themes()`' neon entry, so any way of picking the theme counts; with another theme nothing changes.
+
 ## How it behaves
 
 The panel follows the active terminal's cwd and branch. Branch uses `branch.<branch>.herdr-pr` if set, else exact-branch PRs across GitHub remotes from those remotes' own heads, open ones first. Repo prefers upstream, the branch's tracking remote, then origin, and restores a saved remote; a remote that isn't GitHub is shown disabled. A PR keeps its own repository, which can differ from the list's.

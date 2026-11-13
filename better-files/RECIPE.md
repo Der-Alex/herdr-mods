@@ -16,6 +16,8 @@ Right-click opens a popup at the pointer with groups separated by rules: Open an
 
 Choosing an agent opens a box docked at the bottom of the panel with who it goes to, the path, and a prompt that's required. Only Send delivers.
 
+With Claude Usage's neon theme on, `neon.js` (shared byte for byte between the mods) gives its header that panel's look: a faint hatched ground and a 2px cyan, violet, magenta rule in place of the border. It checks `theme()` against `themes()`' neon entry, so any way of picking the theme counts; with another theme nothing changes.
+
 ## How it works
 
 One class plays three roles, each its own copy: sidebar, viewer and menu, connected by `shared("better-files.*")`.

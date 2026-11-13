@@ -6,7 +6,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const dir = path.join(__dirname, '../mods/branch-issue');
-const FILES = ['settings.js', 'linear/model.js', 'views/ui.js', 'state/saved.js', 'linear/discovery.js', 'linear/reads.js', 'actions/menus.js', 'actions/agents.js', 'actions/changes.js', 'actions/worktrees.js', 'views/list.js', 'views/detail.js', 'views/comments.js', 'views/worktrees.js', 'main.js'];
+const FILES = ['settings.js', 'neon.js', 'linear/model.js', 'views/ui.js', 'state/saved.js', 'linear/discovery.js', 'linear/reads.js', 'actions/menus.js', 'actions/agents.js', 'actions/changes.js', 'actions/worktrees.js', 'views/list.js', 'views/detail.js', 'views/comments.js', 'views/worktrees.js', 'main.js'];
 const source = FILES.map((f) => fs.readFileSync(path.join(dir, f), 'utf8'))
   .join('\n')
   .replace(/^import\s+[\s\S]*?;$/gm, '')
@@ -48,7 +48,7 @@ function harness({ storage = new Map(), exec, hc, known = [] } = {}) {
     exec: exec ?? (async () => ({ code: 1, stdout: '', stderr: '' })),
     hc: hc ?? (async (args) => { sent.push(args); return { code: 0, stdout: '', stderr: '' }; }),
     run: (name, args) => ran.push([name, args]),
-    home: () => '/home/sam', appHome: () => '/app', theme: () => new Proxy({}, { get: (_t, k) => `#${String(k)}` }),
+    home: () => '/home/sam', appHome: () => '/app', themes: () => [], theme: () => new Proxy({}, { get: (_t, k) => `#${String(k)}` }),
     layout: () => live.layout, settings: () => ({ font_family: 'Code' }), readTextFile: async () => null,
     nextCommand: () => new Promise(() => {}), knownAgents: async () => known,
     localStorage: { getItem: (k) => storage.get(k) ?? null, setItem: (k, v) => storage.set(k, v), removeItem: (k) => storage.delete(k) },

@@ -10,6 +10,8 @@ Below, the mod's settings in rows, grouped under a heading by the first part of 
 
 When an update, or anything else, has put defaults back over the person's values, a box at the top says which (naming the versions when the version changed) and lists each setting as a checkbox row, ticked to start: the person's value, an arrow, the current one, with "(default)" when it's unset, and choice labels rather than ids. One button restores the ticked ones and keeps the rest, named for what it will do: Restore mine, Keep the new values, or Restore 1, keep 1. The copy then forgets the ones kept.
 
+With Claude Usage's neon theme on, `neon.js` (shared byte for byte between the mods) gives the Mod settings title that panel's look: a faint hatched ground and a 2px cyan, violet, magenta rule in place of the border. It checks `theme()` against `themes()`' neon entry, so any way of picking the theme counts; with another theme nothing changes.
+
 ## How it works
 
 It lists the folders in `~/.config/herdr-app/mods/` and reads each `mod.json` and the `mod.schema.json` beside it, keeping those with settings in either. Under the schema's `properties.settings`, each leaf is a setting at its dotted key, read for `title`, `description`, `type`, `default`, `enum`, `minimum`, `maximum`, `format` (`duration`, `size`), `x-step`, `x-unit` and `x-labels`. A key in `settings` the schema doesn't describe still shows, with its type guessed from its value.

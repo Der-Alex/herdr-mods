@@ -7,6 +7,7 @@
 import { View, div, svg } from "gpui-kit";
 import { v_flex, h_flex, Scrollbar, InputState, Input, Select, Popup, Checkbox } from "gpui-base";
 import { appHome, home, exec, readTextFile, writeTextFile, theme, props, closeOverlay, run } from "herdr";
+import { neonTheme, NeonHeader } from "./neon.js";
 import {
   fieldsOf,
   getPath,
@@ -648,7 +649,12 @@ export default class BetterConfig extends View {
       .gap(2)
       .border_r(1)
       .border_color(t.border)
-      .child(div().px(10).pt(6).pb(12).text_size(16).font_semibold().text_color(t.foreground).child("Mod settings"))
+      // With the neon theme on, neon.js gives the title a hatched ground and a gradient rule.
+      .child(
+        NeonHeader(div().flex_none().px(10).pt(6).pb(12).when(neonTheme(), (el) => el.mb(6))).child(
+          div().text_size(16).font_semibold().text_color(t.foreground).child("Mod settings"),
+        ),
+      )
       .child(
         div()
           .id("bc-nav")

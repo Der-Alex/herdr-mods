@@ -4,6 +4,7 @@ import { h_flex } from "gpui-base";
 import { spaces, panes, run, openOverlay, theme, window, shared, layout, settings } from "herdr";
 import { find } from "../actions/engine.js";
 import { TEXT, Icon, IconButton, DropLine } from "./ui.js";
+import { neonTheme, NeonRule } from "../neon.js";
 
 const CHAR_WIDTH = 8; // Roughly, to size the drag preview.
 const TAB_HEIGHT = 29;
@@ -188,6 +189,8 @@ export const tabBarMethods = {
       })
       .child(this.renderTabList(t))
       .child(this.renderToolbar(t));
+    // With the neon theme on, a gradient rule takes the bottom border's place.
+    if (neonTheme()) bar.border_color("#00000000").child(NeonRule());
     if (window()?.buttons) bar.children(this.windowButtons());
     const preview = this.dragPreview(t);
     if (preview) bar.child(preview);

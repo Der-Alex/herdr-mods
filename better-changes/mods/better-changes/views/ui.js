@@ -5,6 +5,7 @@ import { div, image, svg } from "gpui-kit";
 import { h_flex, v_flex, Popover, Textarea } from "gpui-base";
 import { theme, settings } from "herdr";
 import { fileIcon, isLight } from "../file-icons.js";
+import { NeonHeader } from "../neon.js";
 
 // Plain px: Herdr scales a mod's sizes by zoom itself.
 export const TEXT = { badge: 10, caption: 11, small: 12, menu: 12.8, body: 13 };
@@ -75,16 +76,19 @@ export function Panel({ id, framed = true }) {
     .when(framed, (el) => el.rounded(RADIUS.panel).border_1().border_color(t.border));
 }
 
+// With the neon theme on, neon.js gives it a hatched ground and a gradient rule.
 export function PanelHeader() {
   const t = theme();
-  return h_flex()
-    .h(SIZE.header)
-    .flex_none()
-    .px(14)
-    .gap(8)
-    .items_center()
-    .border_b(1)
-    .border_color(t.border);
+  return NeonHeader(
+    h_flex()
+      .h(SIZE.header)
+      .flex_none()
+      .px(14)
+      .gap(8)
+      .items_center()
+      .border_b(1)
+      .border_color(t.border),
+  );
 }
 
 // A row matching Herdr's pane header, for a layout that doesn't use ours.
